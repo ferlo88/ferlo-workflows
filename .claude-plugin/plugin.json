@@ -1,10 +1,10 @@
 {
   "name": "ferlo-workflows",
-  "version": "3.0.0",
-  "description": "Complete AI-first workflows for Laravel projects - scaffolding, testing, security audits, database analysis, queue monitoring, backups, CI/CD, and 45+ development tools",
+  "version": "3.1.0",
+  "description": "Complete AI-first workflows for Laravel projects - scaffolding, testing, security audits, database analysis, queue monitoring, backups, CI/CD, phase executor, and 47 development tools",
   "author": {
     "name": "Ferlo",
     "email": "ferlo@extraweb.it"
   },
-  "keywords": ["laravel", "extraweb", "filament", "git-flow", "cicd", "performance", "i18n", "changelog", "slack", "feature-extractor", "roadmap-generator", "documentation"]
+  "keywords": ["laravel", "extraweb", "filament", "git-flow", "cicd", "performance", "i18n", "changelog", "slack", "feature-extractor", "roadmap-generator", "documentation", "phase-executor", "autonomous-development"]
 }

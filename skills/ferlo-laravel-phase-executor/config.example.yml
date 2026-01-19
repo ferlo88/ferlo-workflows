@@ -1,0 +1,147 @@
+# =============================================================================
+# Laravel Phase Executor - Configuration
+# =============================================================================
+# Copia questo file in: .claude/phase-executor.yml
+# e personalizzalo per il tuo progetto.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Project Settings
+# -----------------------------------------------------------------------------
+project:
+  # Nome del progetto (usato nei report)
+  name: "MyProject"
+
+  # Tipo di progetto Laravel
+  # Opzioni: laravel | laravel-api | laravel-saas | laravel-filament
+  type: "laravel"
+
+  # Percorso dei file roadmap
+  roadmap_path: "docs/roadmap"
+
+# -----------------------------------------------------------------------------
+# Quality Gates
+# -----------------------------------------------------------------------------
+# I gate "blocking: true" devono passare per completare la fase
+# I gate "blocking: false" generano warning ma non bloccano
+
+quality_gates:
+  # Unit & Feature Tests
+  tests:
+    enabled: true
+    blocking: true
+    # Coverage minimo richiesto (0-100)
+    coverage_min: 80
+    # Test suite da eseguire
+    suites:
+      - "Unit"
+      - "Feature"
+
+  # Laravel Pint (Code Style)
+  pint:
+    enabled: true
+    blocking: true
+    # Auto-fix se fallisce
+    auto_fix: true
+
+  # PHPStan (Static Analysis)
+  phpstan:
+    enabled: true
+    blocking: true
+    # Livello di analisi (0-9)
+    level: 5
+
+  # Composer Security Audit
+  security:
+    enabled: true
+    blocking: true
+    # Ignora vulnerabilità con severity < threshold
+    # Opzioni: low | medium | high | critical
+    min_severity: "medium"
+
+  # Lighthouse (Performance) - opzionale
+  lighthouse:
+    enabled: false
+    blocking: false
+    # Score minimo (0-100)
+    min_score: 80
+
+  # Pa11y (Accessibility) - opzionale
+  pa11y:
+    enabled: false
+    blocking: false
+    # Standard: WCAG2A | WCAG2AA | WCAG2AAA
+    standard: "WCAG2AA"
+
+# -----------------------------------------------------------------------------
+# Git Settings
+# -----------------------------------------------------------------------------
+git:
+  # Prefix per i branch di feature
+  branch_prefix: "feature/fase-"
+
+  # Prefix per i commit message
+  commit_prefix: "feat"
+
+  # Push automatico dopo completamento fase
+  auto_push: true
+
+  # Branch base (solitamente develop o main)
+  base_branch: "develop"
+
+  # Stash automatico modifiche non committate
+  auto_stash: true
+
+# -----------------------------------------------------------------------------
+# Notifications (opzionale)
+# -----------------------------------------------------------------------------
+notifications:
+  # Notifica al completamento fase
+  on_complete: true
+
+  # Notifica su errore bloccante
+  on_error: true
+
+  # Webhook Slack (opzionale)
+  # slack_webhook: "https://hooks.slack.com/services/..."
+
+# -----------------------------------------------------------------------------
+# Behavior Settings
+# -----------------------------------------------------------------------------
+behavior:
+  # Chiedi conferma prima di ogni commit
+  confirm_commits: false
+
+  # Mostra diff prima di committare
+  show_diff: false
+
+  # Crea backup del database prima di migrazioni
+  backup_db_before_migrate: false
+
+  # Timeout massimo per singolo task (minuti)
+  task_timeout: 30
+
+# -----------------------------------------------------------------------------
+# Templates
+# -----------------------------------------------------------------------------
+templates:
+  # Percorso template todo_fase
+  todo_template: "${CLAUDE_PLUGIN_ROOT}/skills/ferlo-laravel-phase-executor/templates/todo_fase_template.md"
+
+  # Formato commit message
+  commit_format: "{type}(fase-{phase}): TASK-{phase}-{task} - {description}"
+
+# -----------------------------------------------------------------------------
+# Exclusions
+# -----------------------------------------------------------------------------
+exclusions:
+  # File da ignorare nei commit automatici
+  files:
+    - ".env"
+    - ".env.local"
+    - "storage/logs/*"
+    - "bootstrap/cache/*"
+
+  # Task ID da saltare (utile per task manuali)
+  tasks: []
+    # - "TASK-03-015"  # Esempio: task che richiede intervento manuale
