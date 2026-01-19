@@ -1,10 +1,10 @@
 {
   "name": "ferlo-workflows",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Complete AI-first workflows for EXTRAWEB Laravel projects - Git Flow, CI/CD, performance profiling, i18n, database snapshots, Slack notifications, and more",
   "author": {
     "name": "Ferlo",
     "email": "ferlo@extraweb.it"
   },
-  "keywords": ["laravel", "extraweb", "filament", "git-flow", "cicd", "performance", "i18n", "changelog", "slack", "feature-extractor", "reverse-engineering", "documentation"]
+  "keywords": ["laravel", "extraweb", "filament", "git-flow", "cicd", "performance", "i18n", "changelog", "slack", "feature-extractor", "roadmap-generator", "documentation"]
 }
