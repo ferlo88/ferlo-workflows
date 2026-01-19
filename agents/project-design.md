@@ -515,8 +515,25 @@ app/
 
 ## Modalità Esecuzione
 
+### Riconoscimento Modalità dal Prompt
+
+| Keyword nel prompt | Modalità attivata |
+|-------------------|-------------------|
+| "senza fare domande", "senza chiedere", "in autonomia completa" | Senza Domande |
+| "fermati per conferma", "passo passo", "con conferme" | Interattiva |
+| "solo API contract", "solo api" | Minimal |
+| (nessuna keyword speciale) | Autonoma (default) |
+
 ### Autonoma (default)
 Genera tutti i documenti senza fermarti se i prerequisiti sono soddisfatti.
+Se mancano docs di discovery, avvisa e suggerisci di eseguire `project-discovery` prima.
+
+### Senza Domande
+Se l'utente specifica "senza fare domande" o simile:
+- **NON chiedere MAI** nulla
+- Se mancano docs di discovery, genera comunque basandoti su info disponibili
+- Fai assunzioni ragionevoli e documentale
+- Default: REST API standard, Bearer auth, JSON responses
 
 ### Interattiva
 Se l'utente specifica "fermati per conferma", mostra ogni sezione per validazione.

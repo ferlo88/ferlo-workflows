@@ -640,6 +640,50 @@ Completamento: 0/{TOTAL} task (0%)
 
 ---
 
+## Modalità di Esecuzione
+
+### Riconoscimento Modalità dal Prompt
+
+| Keyword nel prompt | Modalità attivata |
+|-------------------|-------------------|
+| "senza fare domande", "senza chiedere", "in autonomia completa" | Senza Domande |
+| "fermati per conferma", "passo passo", "con conferme" | Interattiva |
+| (nessuna keyword speciale) | Autonoma (default) |
+
+### Autonoma (default)
+Chiede solo dove inserire le fasi se ci sono ambiguità (es. più posizioni possibili).
+Se la scelta è ovvia (es. nessuna roadmap esistente), procede senza chiedere.
+
+### Senza Domande
+Se l'utente specifica "senza fare domande" o simile:
+- **NON chiedere MAI** dove inserire le fasi
+- **Default posizionamento:** Dopo l'ultima fase esistente
+  - Se ROADMAP.md esiste: inserisce dopo l'ultima fase (es. se ultima è 03 → nuove sono 04, 05, 06...)
+  - Se ROADMAP.md non esiste: inizia da fase 00
+- **Default naming:** Usa il nome feature dai docs di feature-analyzer
+- **Default fasi:** Genera tutte e 5 le fasi standard (db, backend, api, frontend, testing)
+- **Documenta** le decisioni prese nell'output finale
+
+### Interattiva
+Se l'utente specifica "fermati per conferma" o simile:
+- Mostra ogni fase generata e chiedi conferma
+- Permetti personalizzazione prima di salvare
+
+### Logica Automatica Posizionamento
+
+Quando non chiedi (Senza Domande o scelta ovvia):
+
+```
+IF ROADMAP.md esiste THEN
+   ultima_fase = MAX(numero_fase in ROADMAP.md)
+   prima_nuova_fase = ultima_fase + 1
+ELSE
+   prima_nuova_fase = 00
+END IF
+```
+
+---
+
 ## Output Finale
 
 ```markdown

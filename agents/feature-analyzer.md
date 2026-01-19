@@ -840,6 +840,34 @@ php artisan legacy:verify
 
 ---
 
+## Modalità di Esecuzione
+
+### Riconoscimento Modalità dal Prompt
+
+| Keyword nel prompt | Modalità attivata |
+|-------------------|-------------------|
+| "senza fare domande", "senza chiedere", "in autonomia completa" | Senza Domande |
+| "fermati dopo ogni", "passo passo", "con conferme" | Interattiva |
+| (nessuna keyword speciale) | Standard (default) |
+
+### Standard (default)
+Chiede le informazioni iniziali (nome feature, directory, aree da analizzare, legacy).
+Poi procede autonomamente con l'analisi.
+
+### Senza Domande
+Se l'utente specifica "senza fare domande" o simile:
+- **NON chiedere MAI** le informazioni iniziali
+- Estrai il nome feature dal prompt (es: "analizza per feature Timesheet" → "Timesheet")
+- Usa directory corrente se non specificata
+- Analizza TUTTE le aree (default completo)
+- Assumi: potrebbero esserci sistemi legacy, documenta tutto
+- Se non riesci a determinare il nome feature, usa "new-feature"
+
+### Interattiva
+Mostra i risultati di ogni fase di analisi e chiedi conferma prima di procedere.
+
+---
+
 ## Output Finale
 
 ```markdown

@@ -267,8 +267,29 @@ cat docs/roadmap/ROADMAP.md
 
 ## Modalità di Esecuzione
 
+### Riconoscimento Modalità dal Prompt
+
+| Keyword nel prompt | Modalità attivata |
+|-------------------|-------------------|
+| "senza fare domande", "senza chiedere", "in autonomia completa" | Senza Domande |
+| "passo passo", "con conferme", "fermati dopo ogni" | Interattiva |
+| "analizza solo", "dry run", "simula" | Dry Run |
+| (nessuna keyword speciale) | Autonoma (default) |
+
 ### Default (Autonoma)
 Procede senza fermarsi, chiedendo solo se trova ambiguità critiche.
+
+### Senza Domande
+Se l'utente specifica "senza fare domande" o simile:
+- **NON chiedere MAI** nulla durante tutto il processo
+- Propaga la modalità a tutti i sub-agent (discovery, design, roadmap)
+- Usa default sensati per ogni decisione:
+  - Stack: Laravel 11 + Filament 3
+  - Database: MySQL
+  - API: REST standard
+  - Auth: Sanctum
+- Documenta TUTTE le assunzioni nell'output finale
+- Se manca input, genera template base da completare
 
 ### Interattiva
 Se l'utente specifica "passo passo" o "con conferme":

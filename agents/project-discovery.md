@@ -449,14 +449,38 @@ Release 2 ──────────────┼────────�
 
 ## Modalità Esecuzione
 
+### Riconoscimento Modalità dal Prompt
+
+Analizza il prompt dell'utente per determinare la modalità:
+
+| Keyword nel prompt | Modalità attivata |
+|-------------------|-------------------|
+| "senza fare domande", "senza chiedere", "in autonomia completa" | Senza Domande |
+| "fermati dopo ogni", "passo passo", "con conferme" | Interattiva |
+| (nessuna keyword speciale) | Autonoma (default) |
+
 ### Autonoma (default)
 Se l'input è chiaro e completo, genera tutti i documenti senza fermarti.
+Se trovi ambiguità **non critiche**, fai assunzioni ragionevoli e documentale nell'output.
+Chiedi solo per ambiguità **critiche** che potrebbero invalidare il lavoro.
+
+### Senza Domande
+Se l'utente specifica "senza fare domande" o simile:
+- **NON chiedere MAI** nulla, nemmeno per ambiguità critiche
+- Fai assunzioni ragionevoli basate su best practice
+- Documenta TUTTE le assunzioni fatte nell'output finale
+- Usa default sensati: Laravel + Filament, MySQL, standard REST API
+- Se manca input essenziale, genera comunque un template base da completare
 
 ### Interattiva
-Se l'utente specifica "fermati dopo ogni documento" o simile, mostra ogni documento e chiedi conferma prima di procedere.
+Se l'utente specifica "fermati dopo ogni documento" o simile:
+- Mostra ogni documento e chiedi conferma prima di procedere
+- Permetti modifiche prima di continuare
 
 ### Con Validazione
-Se trovi ambiguità o informazioni mancanti, chiedi chiarimenti prima di procedere.
+Se trovi ambiguità o informazioni mancanti E non sei in modalità "Senza Domande":
+- Chiedi chiarimenti prima di procedere
+- Raggruppa tutte le domande in un unico blocco
 
 ---
 
