@@ -1,11 +1,11 @@
 ---
 name: roadmap
-description: Genera roadmap e TODO da documentazione feature estratta
+description: Genera roadmap e file todo_fase_XX.md compatibili con phase-executor
 ---
 
 # /roadmap - Genera Piano di Implementazione
 
-Trasforma la documentazione di una feature in un piano di lavoro strutturato.
+Trasforma la documentazione di una feature in file `todo_fase_XX_nome.md` direttamente eseguibili con phase-executor.
 
 ## Uso
 
@@ -13,6 +13,7 @@ Trasforma la documentazione di una feature in un piano di lavoro strutturato.
 /roadmap quotes                    # Da docs/features/quotes/
 /roadmap docs/features/invoices    # Path esplicito
 /roadmap --stack=filament          # Con stack specifico
+/roadmap --detail=high             # Dettaglio alto (più task)
 ```
 
 ## Prerequisiti
@@ -28,6 +29,22 @@ docs/features/[feature-name]/
 └── ...
 ```
 
+## Output Generato
+
+```
+docs/roadmap/
+├── ROADMAP.md                      # Overview fasi e dipendenze
+├── todo_fase_00_setup.md           # Setup iniziale
+├── todo_fase_01_database.md        # Schema e migrazioni
+├── todo_fase_02_backend.md         # Modelli e logica
+├── todo_fase_03_frontend.md        # UI e componenti
+├── todo_fase_04_api.md             # Endpoints (se presenti)
+├── todo_fase_05_migration.md       # Legacy data (se presente)
+└── todo_fase_06_testing.md         # Testing strategy
+```
+
+**IMPORTANTE**: I file generati sono compatibili con `ferlo-laravel-phase-executor`.
+
 ## Workflow
 
 ### Step 1: Identifica Sorgente
@@ -42,36 +59,41 @@ Chiedi all'utente:
 
 1. **Stack target**: Laravel vanilla / Filament / Livewire / Vue / React
 2. **Livello dettaglio**:
-   - Alto (ogni campo, ogni metodo)
-   - Medio (per componente)
-   - Basso (solo macro-task)
+   - Alto (ogni campo, ogni metodo) → più TASK
+   - Medio (per componente) → bilanciato
+   - Basso (solo macro-task) → meno TASK
 3. **Include stime?**: Sì/No
 4. **Tipi test**: Unit / Feature / Browser / Tutti / Nessuno
 
-### Step 3: Genera Roadmap
+### Step 3: Genera File
 
-Leggi ogni file MD sorgente e genera:
+Per ogni fase, crea file `todo_fase_XX_nome.md` con:
 
+1. **Metadata**: ID, Nome, Branch, Dipendenze, Status
+2. **Obiettivo**: 2-3 righe descrittive
+3. **Pre-requisiti**: Checkbox verificabili
+4. **Task List**: Con ID `TASK-XX-NNN` e acceptance criteria
+5. **Quality Gates**: Tabella con comandi
+6. **Finalizzazione**: Commit e push
+7. **Progress**: Contatore task
+
+### Step 4: Genera ROADMAP.md
+
+1. Tabella fasi con file, dipendenze, priorità
+2. Diagramma dipendenze ASCII
+3. Istruzioni quick start
+
+## Formato Task (obbligatorio)
+
+```markdown
+- [ ] `TASK-01-001` **Creare migration users**
+  - **File:** `database/migrations/xxx_create_users_table.php`
+  - **Descrizione:** Definire schema tabella utenti
+  - **Acceptance criteria:**
+    - [ ] Migration creata con tutti i campi
+    - [ ] Indici configurati
+    - [ ] Foreign keys definite
 ```
-docs/roadmap/[feature-name]/
-├── ROADMAP.md               # Overview fasi e dipendenze
-├── FASE-00-SETUP.md         # Preparazione ambiente
-├── FASE-01-DATABASE.md      # Schema e migrations
-├── FASE-02-BACKEND.md       # Models, services, controllers
-├── FASE-03-FRONTEND.md      # Views, components
-├── FASE-04-API.md           # REST endpoints (se presenti)
-├── FASE-05-MIGRATION.md     # Legacy data (se presente)
-├── FASE-06-TEST.md          # Testing strategy
-└── TODO.md                  # Checklist completa
-```
-
-### Step 4: Output
-
-Mostra riepilogo:
-- Fasi generate
-- TODO totali
-- Dipendenze identificate
-- Suggerimenti per iniziare
 
 ## Esempio Completo
 
@@ -84,13 +106,23 @@ Mostra riepilogo:
 
 # Output:
 # ✓ Letti 5 file sorgente
-# ✓ Generate 7 fasi
-# ✓ Creati 45 TODO
+# ✓ Generate 7 fasi (todo_fase_00 → todo_fase_06)
+# ✓ Creati 45 TASK totali
+#
+# File generati:
+# - docs/roadmap/ROADMAP.md
+# - docs/roadmap/todo_fase_00_setup.md
+# - docs/roadmap/todo_fase_01_database.md
+# - docs/roadmap/todo_fase_02_backend.md
+# - docs/roadmap/todo_fase_03_frontend.md
+# - docs/roadmap/todo_fase_06_testing.md
 #
 # Prossimi passi:
-# 1. Leggi docs/roadmap/quotes/ROADMAP.md
-# 2. Inizia da FASE-00-SETUP.md
-# 3. Usa TODO.md come checklist
+# 1. "Esegui la fase 00 del progetto"
+# 2. Oppure leggi docs/roadmap/ROADMAP.md
+
+# 3. Esegui fase con phase-executor
+"Esegui la fase 01 del progetto"
 ```
 
 ## Opzioni
@@ -106,10 +138,32 @@ Mostra riepilogo:
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  /extract       │ ──▶ │  /roadmap        │ ──▶ │  Implementa     │
-│  (documenta)    │     │  (pianifica)     │     │  (sviluppa)     │
+│  /extract       │ ──▶ │  /roadmap        │ ──▶ │  phase-executor │
+│  (documenta)    │     │  (pianifica)     │     │  (esegue)       │
 └─────────────────┘     └──────────────────┘     └─────────────────┘
          │                       │                        │
          ▼                       ▼                        ▼
    docs/features/          docs/roadmap/            Codice finale
+   FEATURE-OVERVIEW.md     todo_fase_XX.md          + Test + Commit
 ```
+
+## Convenzioni Naming
+
+- **File**: `todo_fase_XX_nome.md` (lowercase, underscore)
+- **Task ID**: `TASK-XX-NNN` (es. TASK-01-001, TASK-01-002, TASK-01-010)
+- **Branch**: `feature/fase-XX-nome`
+- **Commit**: `feat(fase-XX): TASK-XX-NNN - descrizione`
+
+## Post-Generazione
+
+Dopo aver generato la roadmap, puoi:
+
+1. **Esecuzione manuale**: Leggi ogni `todo_fase_XX.md` e implementa
+2. **Esecuzione automatica**: `"Esegui la fase 01 del progetto"`
+
+Il phase-executor gestirà:
+- Creazione branch
+- Esecuzione task in ordine
+- Quality gates
+- Commit atomici
+- Report finale

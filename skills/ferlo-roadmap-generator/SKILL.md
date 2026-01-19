@@ -1,12 +1,19 @@
 ---
 name: ferlo-roadmap-generator
-description: Genera roadmap e TODO da documentazione feature esistente. Usa quando l'utente chiede di "generare roadmap", "creare TODO da docs", "pianificare implementazione", "fasi sviluppo", "convertire specifiche in task", o ha file MD di feature da trasformare in piano di lavoro.
-version: 1.0.0
+description: Genera roadmap e file todo_fase_XX.md compatibili con ferlo-laravel-phase-executor. Usa quando l'utente chiede di "generare roadmap", "creare TODO da docs", "pianificare implementazione", "fasi sviluppo", o ha file MD di feature da trasformare in piano di lavoro eseguibile.
+version: 2.0.0
 ---
 
-# Roadmap Generator - Da Documentazione a Piano di Lavoro
+# Roadmap Generator - Da Documentazione a Piano Eseguibile
 
-Trasforma la documentazione di una feature (generata da `/extract` o manuale) in un piano di implementazione strutturato con fasi, TODO e stime.
+Trasforma la documentazione di una feature in un piano di implementazione strutturato con fasi e TODO **compatibili con ferlo-laravel-phase-executor**.
+
+## Output Compatibile
+
+I file generati sono direttamente eseguibili con:
+```
+"Esegui la fase 01 del progetto"
+```
 
 ## Input Atteso
 
@@ -25,19 +32,356 @@ docs/features/[feature-name]/
 ## Output Generato
 
 ```
-docs/roadmap/[feature-name]/
-├── ROADMAP.md               # Panoramica fasi
-├── FASE-00-SETUP.md         # Setup iniziale
-├── FASE-01-DATABASE.md      # Schema e migrazioni
-├── FASE-02-BACKEND.md       # Modelli e logica
-├── FASE-03-FRONTEND.md      # UI e componenti
-├── FASE-04-API.md           # Endpoints (se presente)
-├── FASE-05-MIGRATION.md     # Dati legacy (se presente)
-├── FASE-06-TEST.md          # Testing
-└── TODO.md                  # Checklist completa
+docs/roadmap/
+├── ROADMAP.md                      # Panoramica e dipendenze
+├── todo_fase_00_setup.md           # Setup iniziale
+├── todo_fase_01_database.md        # Schema e migrazioni
+├── todo_fase_02_backend.md         # Modelli e logica
+├── todo_fase_03_frontend.md        # UI e componenti
+├── todo_fase_04_api.md             # Endpoints (se presente)
+├── todo_fase_05_migration.md       # Dati legacy (se presente)
+└── todo_fase_06_testing.md         # Testing
 ```
 
-## Workflow
+**IMPORTANTE**: Il naming `todo_fase_XX_nome.md` è obbligatorio per compatibilità con phase-executor.
+
+---
+
+## Template File Output
+
+### ROADMAP.md
+
+```markdown
+# [Feature/Project Name] - Roadmap Implementazione
+
+## Overview
+
+| Campo | Valore |
+|-------|--------|
+| **Progetto** | [nome] |
+| **Complessità** | [Bassa/Media/Alta] |
+| **Fasi totali** | [N] |
+| **Generato il** | [data] |
+
+## Fasi
+
+| Fase | File | Nome | Dipende da | Priorità |
+|------|------|------|------------|----------|
+| 00 | todo_fase_00_setup.md | Setup Progetto | - | Critica |
+| 01 | todo_fase_01_database.md | Database Schema | Fase 00 | Critica |
+| 02 | todo_fase_02_backend.md | Backend Logic | Fase 01 | Alta |
+| 03 | todo_fase_03_frontend.md | Frontend UI | Fase 02 | Alta |
+| 04 | todo_fase_04_api.md | API Endpoints | Fase 02 | Media |
+| 05 | todo_fase_05_migration.md | Data Migration | Fase 01 | Media |
+| 06 | todo_fase_06_testing.md | Testing & QA | Fase 03,04 | Alta |
+
+## Diagramma Dipendenze
+
+```
+Fase 00 (Setup)
+    │
+    ▼
+Fase 01 (Database)
+    │
+    ├──────────────┐
+    ▼              ▼
+Fase 02 (Backend)  Fase 05 (Migration)
+    │
+    ├──────────────┐
+    ▼              ▼
+Fase 03 (Frontend) Fase 04 (API)
+    │              │
+    └──────┬───────┘
+           ▼
+    Fase 06 (Testing)
+```
+
+## Quick Start
+
+1. Leggi ogni file `todo_fase_XX_*.md` in ordine
+2. Oppure usa: `"Esegui la fase 01 del progetto"`
+3. Il phase-executor gestirà automaticamente branch, commit e quality gates
+```
+
+---
+
+### Template todo_fase_XX_nome.md
+
+**FORMATO OBBLIGATORIO** per compatibilità con phase-executor:
+
+```markdown
+# Fase {XX}: {NOME_FASE}
+
+<!--
+ISTRUZIONI PER CLAUDE:
+1. Leggi questo file dall'inizio
+2. Verifica i pre-requisiti
+3. Esegui ogni task [ ] in ordine
+4. Dopo ogni task: testa, committa
+5. Alla fine: quality gates, aggiorna questo file, push
+-->
+
+## Metadata
+
+| Campo | Valore |
+|-------|--------|
+| **ID Fase** | {XX} |
+| **Nome** | {Nome descrittivo} |
+| **Durata stimata** | {X} giorni |
+| **Dipende da** | Fase {YY} |
+| **Status** | TODO |
+| **Branch** | `feature/fase-{XX}-{nome-slug}` |
+| **Assegnato** | Claude Code |
+
+## Obiettivo
+
+{Descrizione chiara in 2-3 righe di cosa deve essere completato in questa fase}
+
+## Pre-requisiti
+
+Prima di iniziare, verifica che:
+
+- [ ] Fase {YY} completata e mergiata
+- [ ] Branch `develop` aggiornato
+- [ ] Database migrato
+- [ ] `.env` configurato correttamente
+
+---
+
+## Task List
+
+### {Categoria 1}
+
+- [ ] `TASK-{XX}-001` **{Titolo task}**
+  - **File:** `{percorso/file.php}`
+  - **Descrizione:** {Cosa deve fare questo task}
+  - **Acceptance criteria:**
+    - [ ] {Criterio 1}
+    - [ ] {Criterio 2}
+
+- [ ] `TASK-{XX}-002` **{Titolo task}**
+  - **File:** `{percorso/file.php}`
+  - **Descrizione:** {Cosa deve fare}
+  - **Acceptance criteria:**
+    - [ ] {Criterio 1}
+
+### {Categoria 2}
+
+- [ ] `TASK-{XX}-010` **{Titolo task}**
+  - **File:** `{percorso/file.php}`
+  - **Descrizione:** {Cosa deve fare}
+
+---
+
+## Quality Gates
+
+Esegui tutti i gate dopo aver completato i task:
+
+| Gate | Comando | Bloccante | Status |
+|------|---------|-----------|--------|
+| Unit Tests | `php artisan test --testsuite=Unit` | Si | |
+| Feature Tests | `php artisan test --testsuite=Feature` | Si | |
+| Code Style | `./vendor/bin/pint --test` | Si | |
+| Static Analysis | `./vendor/bin/phpstan analyse` | Si | |
+| Security | `composer audit` | Si | |
+
+---
+
+## Finalizzazione
+
+Dopo i quality gates:
+
+- [ ] Aggiorna questo file (segna [x] tutti i task)
+- [ ] Aggiorna `CHANGELOG.md`
+- [ ] Commit finale: `docs(fase-{XX}): complete phase {XX} - {nome}`
+- [ ] Push: `git push origin feature/fase-{XX}-{nome}`
+
+---
+
+## Progress
+
+```
+Completamento: 0/{TOTAL} task (0%)
+```
+
+---
+
+## Note di Sviluppo
+
+| Data | Nota |
+|------|------|
+| | |
+```
+
+---
+
+## Esempi Concreti per Fase
+
+### todo_fase_00_setup.md
+
+```markdown
+# Fase 00: Setup Progetto
+
+## Metadata
+
+| Campo | Valore |
+|-------|--------|
+| **ID Fase** | 00 |
+| **Nome** | Setup Progetto |
+| **Durata stimata** | 0.5 giorni |
+| **Dipende da** | - |
+| **Status** | TODO |
+| **Branch** | `feature/fase-00-setup` |
+| **Assegnato** | Claude Code |
+
+## Obiettivo
+
+Preparare l'ambiente, creare la struttura directory e installare le dipendenze necessarie.
+
+## Pre-requisiti
+
+- [ ] Repository clonato
+- [ ] Ambiente locale funzionante
+- [ ] Accesso al database
+
+---
+
+## Task List
+
+### Configurazione
+
+- [ ] `TASK-00-001` **Creare branch di sviluppo**
+  - **Descrizione:** Creare branch feature dalla develop
+  - **Acceptance criteria:**
+    - [ ] Branch creato da develop aggiornato
+
+- [ ] `TASK-00-002` **Installare dipendenze Composer**
+  - **File:** `composer.json`
+  - **Descrizione:** Installare pacchetti richiesti
+  - **Acceptance criteria:**
+    - [ ] Pacchetti installati senza errori
+
+- [ ] `TASK-00-003` **Configurare variabili ambiente**
+  - **File:** `.env`
+  - **Descrizione:** Aggiungere variabili necessarie
+  - **Acceptance criteria:**
+    - [ ] Variabili aggiunte
+    - [ ] Applicazione funzionante
+
+### Struttura
+
+- [ ] `TASK-00-010` **Creare directory structure**
+  - **Descrizione:** Creare cartelle per la feature
+  - **Acceptance criteria:**
+    - [ ] Directory create secondo convenzioni
+
+---
+
+## Quality Gates
+
+| Gate | Comando | Bloccante | Status |
+|------|---------|-----------|--------|
+| Tests | `php artisan test` | Si | |
+| Pint | `./vendor/bin/pint --test` | Si | |
+
+---
+
+## Finalizzazione
+
+- [ ] Commit: `docs(fase-00): complete setup phase`
+- [ ] Push branch
+
+## Progress
+
+```
+Completamento: 0/4 task (0%)
+```
+```
+
+### todo_fase_01_database.md
+
+```markdown
+# Fase 01: Database Schema
+
+## Metadata
+
+| Campo | Valore |
+|-------|--------|
+| **ID Fase** | 01 |
+| **Nome** | Database Schema |
+| **Durata stimata** | 1 giorno |
+| **Dipende da** | Fase 00 |
+| **Status** | TODO |
+| **Branch** | `feature/fase-01-database` |
+| **Assegnato** | Claude Code |
+
+## Obiettivo
+
+Creare lo schema database con migrations, definire indici e foreign keys.
+
+## Pre-requisiti
+
+- [ ] Fase 00 completata e mergiata
+- [ ] Branch develop aggiornato
+- [ ] Database locale accessibile
+
+---
+
+## Task List
+
+### Migrations
+
+- [ ] `TASK-01-001` **Creare migration tabella [nome]**
+  - **File:** `database/migrations/xxxx_create_[nome]_table.php`
+  - **Descrizione:** Definire schema tabella principale
+  - **Acceptance criteria:**
+    - [ ] Migration creata
+    - [ ] Tutti i campi definiti
+    - [ ] Indici configurati
+    - [ ] Foreign keys definite
+
+- [ ] `TASK-01-002` **Creare migration tabella [nome2]**
+  - **File:** `database/migrations/xxxx_create_[nome2]_table.php`
+  - **Descrizione:** Definire schema tabella correlata
+  - **Acceptance criteria:**
+    - [ ] Migration creata
+    - [ ] Relazioni definite
+
+### Esecuzione
+
+- [ ] `TASK-01-010` **Eseguire migrations**
+  - **Descrizione:** Applicare migrations al database
+  - **Acceptance criteria:**
+    - [ ] `php artisan migrate` eseguito senza errori
+    - [ ] Schema verificato con `db:show`
+
+---
+
+## Quality Gates
+
+| Gate | Comando | Bloccante | Status |
+|------|---------|-----------|--------|
+| Tests | `php artisan test` | Si | |
+| Pint | `./vendor/bin/pint --test` | Si | |
+| PHPStan | `./vendor/bin/phpstan analyse` | Si | |
+
+---
+
+## Finalizzazione
+
+- [ ] Commit: `docs(fase-01): complete database phase`
+- [ ] Push branch
+
+## Progress
+
+```
+Completamento: 0/3 task (0%)
+```
+```
+
+---
+
+## Workflow di Generazione
 
 ### Step 1: Leggi Documentazione Feature
 
@@ -51,452 +395,102 @@ cat docs/features/[feature-name]/DATABASE-SCHEMA.md
 # ... etc
 ```
 
-### Step 2: Analizza e Struttura
+### Step 2: Estrai Informazioni
 
 Per ogni file MD, estrai:
 
-| File Sorgente | Informazioni da Estrarre |
-|---------------|--------------------------|
-| FEATURE-OVERVIEW | Funzionalità, dipendenze, flussi |
-| DATABASE-SCHEMA | Tabelle, campi, relazioni, indici |
-| BACKEND-LOGIC | Modelli, validazioni, business rules |
-| FRONTEND-UI | Schermate, form, componenti |
-| API-ENDPOINTS | Endpoints, metodi, payload |
-| DATA-MIGRATION | Mapping, trasformazioni, validazioni |
-
-### Step 3: Genera Fasi Roadmap
-
-## Template File Output
-
-### ROADMAP.md
-
-```markdown
-# [Feature Name] - Roadmap Implementazione
-
-## Overview
-- **Feature**: [nome]
-- **Complessità stimata**: [Bassa/Media/Alta]
-- **Fasi totali**: [N]
-- **Dipendenze esterne**: [elenco]
-
-## Fasi
-
-| Fase | Nome | Dipende da | Priorità |
-|------|------|------------|----------|
-| 0 | Setup Progetto | - | Critica |
-| 1 | Database Schema | Fase 0 | Critica |
-| 2 | Backend Logic | Fase 1 | Alta |
-| 3 | Frontend UI | Fase 2 | Alta |
-| 4 | API Endpoints | Fase 2 | Media |
-| 5 | Data Migration | Fase 1 | Media |
-| 6 | Testing & QA | Fase 3,4 | Alta |
-
-## Diagramma Dipendenze
-
-```
-Fase 0 (Setup)
-    │
-    ▼
-Fase 1 (Database)
-    │
-    ├──────────────┐
-    ▼              ▼
-Fase 2 (Backend)  Fase 5 (Migration)
-    │
-    ├──────────────┐
-    ▼              ▼
-Fase 3 (Frontend) Fase 4 (API)
-    │              │
-    └──────┬───────┘
-           ▼
-    Fase 6 (Testing)
-```
-
-## Quick Start
-
-1. Leggi `FASE-00-SETUP.md` e completa i prerequisiti
-2. Procedi in ordine seguendo le dipendenze
-3. Usa `TODO.md` come checklist di avanzamento
-```
-
-### FASE-00-SETUP.md
-
-```markdown
-# Fase 0 - Setup Progetto
-
-## Obiettivo
-Preparare l'ambiente e le dipendenze per l'implementazione della feature.
-
-## Prerequisiti
-- [ ] Ambiente di sviluppo configurato
-- [ ] Accesso al repository
-- [ ] Database locale funzionante
-
-## TODO
-
-### 0.1 Creazione Branch
-```bash
-git checkout -b feature/[feature-name]
-```
-
-### 0.2 Dipendenze (se necessarie)
-```bash
-# Composer packages
-composer require [packages]
-
-# NPM packages
-npm install [packages]
-```
-
-### 0.3 Configurazione
-- [ ] Variabili .env necessarie
-- [ ] Config files da creare/modificare
-
-### 0.4 Directory Structure
-```
-app/
-├── Models/[Feature]/
-├── Http/Controllers/[Feature]/
-├── Services/[Feature]/
-└── ...
-```
-
-## Criteri di Completamento
-- [ ] Branch creato
-- [ ] Dipendenze installate
-- [ ] Configurazione completata
-- [ ] Struttura directory pronta
-
-## Prossima Fase
-→ [FASE-01-DATABASE.md](./FASE-01-DATABASE.md)
-```
-
-### FASE-01-DATABASE.md
-
-```markdown
-# Fase 1 - Database Schema
-
-## Obiettivo
-Creare lo schema database per la feature.
-
-## Dipendenze
-- ✅ Fase 0 completata
-
-## TODO
-
-### 1.1 Migrations
-
-Per ogni tabella in DATABASE-SCHEMA.md:
-
-#### Tabella: `[table_name]`
-```bash
-php artisan make:migration create_[table_name]_table
-```
-
-```php
-Schema::create('[table_name]', function (Blueprint $table) {
-    $table->id();
-    // [campi da DATABASE-SCHEMA.md]
-    $table->timestamps();
-});
-```
-
-**Campi:**
-- [ ] `campo1` - tipo - descrizione
-- [ ] `campo2` - tipo - descrizione
-- [ ] ...
-
-**Indici:**
-- [ ] Index su `campo_x`
-- [ ] Unique su `campo_y`
-
-**Foreign Keys:**
-- [ ] `field_id` → `other_table.id`
-
-### 1.2 Esegui Migrations
-```bash
-php artisan migrate
-```
-
-### 1.3 Verifica Schema
-```bash
-php artisan db:show --table=[table_name]
-```
-
-## Criteri di Completamento
-- [ ] Tutte le migrations create
-- [ ] Migrations eseguite senza errori
-- [ ] Schema verificato corrisponde a DATABASE-SCHEMA.md
-- [ ] Indici e FK funzionanti
-
-## Prossima Fase
-→ [FASE-02-BACKEND.md](./FASE-02-BACKEND.md)
-```
-
-### FASE-02-BACKEND.md
-
-```markdown
-# Fase 2 - Backend Logic
-
-## Obiettivo
-Implementare modelli, validazioni e business logic.
-
-## Dipendenze
-- ✅ Fase 1 completata (schema DB esistente)
-
-## TODO
-
-### 2.1 Models
-
-Per ogni modello in BACKEND-LOGIC.md:
-
-#### Model: `[ModelName]`
-```bash
-php artisan make:model [ModelName]
-```
-
-- [ ] Definire `$fillable`
-- [ ] Definire `$casts`
-- [ ] Implementare relazioni:
-  - [ ] `relationName()` → BelongsTo
-  - [ ] `relationName()` → HasMany
-- [ ] Implementare scopes:
-  - [ ] `scopeName()`
-- [ ] Implementare accessors/mutators
-
-### 2.2 Form Requests (Validazione)
-
-```bash
-php artisan make:request [ModelName]Request
-```
-
-Regole da BACKEND-LOGIC.md:
-- [ ] `campo1` → `required|string|max:255`
-- [ ] `campo2` → `nullable|date`
-- [ ] ...
-
-### 2.3 Services/Actions
-
-```bash
-mkdir -p app/Services/[Feature]
-```
-
-- [ ] `Create[Model]Action`
-- [ ] `Update[Model]Action`
-- [ ] `Delete[Model]Action`
-- [ ] Business logic specifica
-
-### 2.4 Controllers
-
-```bash
-php artisan make:controller [Feature]/[Model]Controller --resource
-```
-
-- [ ] `index()` - lista
-- [ ] `create()` - form creazione
-- [ ] `store()` - salva nuovo
-- [ ] `show()` - dettaglio
-- [ ] `edit()` - form modifica
-- [ ] `update()` - salva modifiche
-- [ ] `destroy()` - elimina
-
-### 2.5 Routes
-
-```php
-// routes/web.php
-Route::resource('[feature]', [Model]Controller::class);
-```
-
-### 2.6 Policies (se necessarie)
-
-```bash
-php artisan make:policy [Model]Policy --model=[Model]
-```
-
-## Criteri di Completamento
-- [ ] Models con relazioni funzionanti
-- [ ] Validazioni implementate
-- [ ] Services/Actions testabili
-- [ ] Routes registrate
-- [ ] CRUD base funzionante
-
-## Prossima Fase
-→ [FASE-03-FRONTEND.md](./FASE-03-FRONTEND.md)
-```
-
-### FASE-03-FRONTEND.md
-
-```markdown
-# Fase 3 - Frontend UI
-
-## Obiettivo
-Implementare interfaccia utente e componenti.
-
-## Dipendenze
-- ✅ Fase 2 completata (backend funzionante)
-
-## TODO
-
-### 3.1 Views/Pages
-
-Da FRONTEND-UI.md, per ogni schermata:
-
-#### Lista [Feature]
-- [ ] Creare view `resources/views/[feature]/index.blade.php`
-- [ ] Tabella con colonne: [elenco]
-- [ ] Filtri: [elenco]
-- [ ] Azioni: [elenco]
-- [ ] Paginazione
-
-#### Form Crea/Modifica
-- [ ] Creare view `resources/views/[feature]/form.blade.php`
-- [ ] Campi form:
-  | Campo | Tipo Input | Validazione JS |
-  |-------|------------|----------------|
-  | ... | ... | ... |
-- [ ] Feedback errori
-- [ ] Submit con loading state
-
-#### Dettaglio
-- [ ] Creare view `resources/views/[feature]/show.blade.php`
-- [ ] Sezioni: [elenco]
-- [ ] Azioni: [elenco]
-
-### 3.2 Componenti Riutilizzabili
-
-- [ ] Componente 1: [descrizione]
-- [ ] Componente 2: [descrizione]
-
-### 3.3 Filament Resources (se applicabile)
-
-```bash
-php artisan make:filament-resource [Model] --generate
-```
-
-- [ ] Configurare `$table` columns
-- [ ] Configurare `$form` fields
-- [ ] Configurare filters
-- [ ] Configurare actions
-
-### 3.4 Assets
-
-- [ ] CSS/Tailwind specifici
-- [ ] JavaScript interazioni
-- [ ] Build assets: `npm run build`
-
-## Criteri di Completamento
-- [ ] Tutte le schermate implementate
-- [ ] Form funzionanti con validazione
-- [ ] Componenti riutilizzabili
-- [ ] UI responsive
-- [ ] UX conforme a FRONTEND-UI.md
-
-## Prossima Fase
-→ [FASE-04-API.md](./FASE-04-API.md) (se presente)
-→ [FASE-06-TEST.md](./FASE-06-TEST.md) (se no API)
-```
-
-### TODO.md
-
-```markdown
-# [Feature Name] - TODO Completo
-
-## Legenda
-- [ ] Da fare
-- [x] Completato
-- [~] In corso
-- [!] Bloccato
+| File Sorgente | Genera | Task ID Range |
+|---------------|--------|---------------|
+| FEATURE-OVERVIEW | todo_fase_00_setup.md | TASK-00-XXX |
+| DATABASE-SCHEMA | todo_fase_01_database.md | TASK-01-XXX |
+| BACKEND-LOGIC | todo_fase_02_backend.md | TASK-02-XXX |
+| FRONTEND-UI | todo_fase_03_frontend.md | TASK-03-XXX |
+| API-ENDPOINTS | todo_fase_04_api.md | TASK-04-XXX |
+| DATA-MIGRATION | todo_fase_05_migration.md | TASK-05-XXX |
+| (sempre) | todo_fase_06_testing.md | TASK-06-XXX |
+
+### Step 3: Genera File
+
+Per ogni fase:
+
+1. **Crea file** con nome `todo_fase_XX_nome.md`
+2. **Compila Metadata** con ID, dipendenze, branch
+3. **Genera Task List** con ID progressivi `TASK-XX-NNN`
+4. **Aggiungi Quality Gates** standard
+5. **Calcola Progress** totale task
+
+### Step 4: Genera ROADMAP.md
+
+1. Elenca tutte le fasi generate
+2. Definisci dipendenze
+3. Crea diagramma ASCII
+4. Aggiungi istruzioni quick start
 
 ---
-
-## Fase 0 - Setup
-- [ ] Creare branch feature
-- [ ] Installare dipendenze
-- [ ] Configurare ambiente
-
-## Fase 1 - Database
-- [ ] Migration `create_table1_table`
-- [ ] Migration `create_table2_table`
-- [ ] Verificare schema
-
-## Fase 2 - Backend
-- [ ] Model `Model1`
-  - [ ] Fillable
-  - [ ] Relazioni
-  - [ ] Scopes
-- [ ] Model `Model2`
-  - [ ] ...
-- [ ] FormRequest validazioni
-- [ ] Controller CRUD
-- [ ] Routes
-- [ ] Policy
-
-## Fase 3 - Frontend
-- [ ] View lista
-- [ ] View form
-- [ ] View dettaglio
-- [ ] Componenti
-- [ ] Filament Resource
-
-## Fase 4 - API (se presente)
-- [ ] GET /api/resource
-- [ ] POST /api/resource
-- [ ] PUT /api/resource/{id}
-- [ ] DELETE /api/resource/{id}
-
-## Fase 5 - Migration Dati (se presente)
-- [ ] Script migrazione
-- [ ] Validazione dati
-- [ ] Rollback plan
-
-## Fase 6 - Testing
-- [ ] Unit tests models
-- [ ] Feature tests controllers
-- [ ] Browser tests UI
-- [ ] Test coverage > 80%
-
----
-
-## Note e Blocchi
-
-[Spazio per annotazioni durante lo sviluppo]
-
----
-
-## Changelog Implementazione
-
-| Data | Fase | Completato | Note |
-|------|------|------------|------|
-| | | | |
-```
 
 ## Domande da Fare all'Utente
 
 Prima di generare, chiedi:
 
-1. **Stack target?** (Laravel, Filament, Livewire, Vue, etc.)
-2. **Livello dettaglio TODO?** (Alto/Medio/Basso)
-3. **Includere stime temporali?** (Sì/No)
-4. **Testing richiesto?** (Unit, Feature, Browser, tutti)
-5. **Convenzioni naming progetto?** (Se diverse da default)
+1. **Stack target?** (Laravel, Filament, Livewire, Vue)
+2. **Livello dettaglio?**
+   - Alto: ogni campo, ogni metodo → più TASK
+   - Medio: per componente → bilanciato
+   - Basso: solo macro-task → meno TASK
+3. **Includere stime?** (Sì/No)
+4. **Testing?** (Unit, Feature, Browser, tutti)
 
-## Comandi Utili
+---
 
-```bash
-# Verifica file sorgente esistono
-ls -la docs/features/[feature-name]/
+## Convenzioni Naming
 
-# Crea directory output
-mkdir -p docs/roadmap/[feature-name]/
+### File
+- `todo_fase_XX_nome.md` (lowercase, underscore)
+- XX = numero fase con zero padding (00, 01, 02...)
+- nome = slug lowercase (database, backend, frontend...)
 
-# Conta TODO generati
-grep -c "\- \[ \]" docs/roadmap/[feature-name]/TODO.md
+### Task ID
+- `TASK-XX-NNN`
+- XX = numero fase
+- NNN = numero task progressivo (001, 002, 010, 011...)
+- Lasciare gap per inserimenti (001, 002, 010, 011, 020...)
+
+### Branch
+- `feature/fase-XX-nome`
+
+### Commit
+- `feat(fase-XX): TASK-XX-NNN - descrizione`
+- `docs(fase-XX): complete phase XX`
+
+---
+
+## Integrazione con Phase Executor
+
+Dopo aver generato la roadmap, l'utente può eseguire:
+
 ```
+"Esegui la fase 01 del progetto"
+```
+
+Il phase-executor:
+1. Legge `docs/roadmap/todo_fase_01_*.md`
+2. Crea branch `feature/fase-01-*`
+3. Esegue ogni TASK in ordine
+4. Applica quality gates
+5. Committa e pusha
+6. Genera report
+
+---
 
 ## Best Practices
 
-1. **Ordine fasi**: Rispetta sempre le dipendenze
-2. **Granularità TODO**: Un TODO = un'azione atomica completabile
-3. **Verifiche**: Ogni fase deve avere criteri di completamento chiari
-4. **Flessibilità**: L'utente può riordinare fasi non dipendenti
-5. **Tracciabilità**: Collegare ogni TODO al file sorgente di riferimento
+1. **Task atomici**: Un TASK = un'azione completabile e testabile
+2. **Acceptance criteria**: Sempre verificabili oggettivamente
+3. **File espliciti**: Indicare sempre il file da creare/modificare
+4. **Gap negli ID**: TASK-01-001, 002, 010, 011 (permette inserimenti)
+5. **Dipendenze chiare**: Ogni fase indica da cosa dipende
+6. **Quality gates**: Sempre presenti in ogni fase
+
+---
+
+*Skill aggiornata per compatibilità con ferlo-laravel-phase-executor - v2.0.0*
