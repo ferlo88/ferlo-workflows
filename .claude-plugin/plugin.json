@@ -1,0 +1,10 @@
+{
+  "name": "ferlo-workflows",
+  "version": "1.1.0",
+  "description": "AI-first workflows for EXTRAWEB Laravel projects",
+  "author": {
+    "name": "Ferlo",
+    "email": "ferlo@extraweb.it"
+  },
+  "keywords": ["laravel", "extraweb", "code-review", "testing", "roadmap"]
+}
