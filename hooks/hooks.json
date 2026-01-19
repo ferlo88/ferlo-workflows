@@ -1,4 +1,15 @@
 {
+  "SessionStart": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "At session start, if this is a Laravel project (composer.json exists with laravel/framework), silently check for security vulnerabilities by suggesting to run 'composer audit' if not done recently. Only warn the user if critical vulnerabilities are found. Do not interrupt the user's workflow for minor issues."
+        }
+      ]
+    }
+  ],
   "Notification": [
     {
       "matcher": ".*",

@@ -1,7 +1,7 @@
 {
   "name": "ferlo-workflows",
-  "version": "2.3.0",
-  "description": "Complete AI-first workflows for EXTRAWEB Laravel projects - Git Flow, CI/CD, performance profiling, i18n, database snapshots, Slack notifications, and more",
+  "version": "3.0.0",
+  "description": "Complete AI-first workflows for Laravel projects - scaffolding, testing, security audits, database analysis, queue monitoring, backups, CI/CD, and 45+ development tools",
   "author": {
     "name": "Ferlo",
     "email": "ferlo@extraweb.it"
