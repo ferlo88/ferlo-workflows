@@ -1,0 +1,44 @@
+{
+  "PreToolUse": [
+    {
+      "matcher": "Write|Edit",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "Before writing PHP code, verify:\n1. No SQL injection (use parameterized queries)\n2. No XSS (escape output with e() or {{ }})\n3. Mass assignment protection ($fillable or $guarded)\n4. CSRF token in forms\n5. Authorization checks where needed\n\nIf the code violates any security best practice, warn the user."
+        }
+      ]
+    },
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "If this is a destructive command (migrate:fresh, db:wipe, rm -rf, git reset --hard), warn the user about potential data loss and ask for confirmation."
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "Write|Edit",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "After writing code, check if:\n1. The file follows PSR-12 coding standards\n2. Laravel conventions are respected (naming, structure)\n3. Consider suggesting to run './vendor/bin/pint' if PHP file was modified"
+        }
+      ]
+    }
+  ],
+  "Stop": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "Before ending the task, remind the user to:\n1. Run tests: php artisan test\n2. Check code style: ./vendor/bin/pint\n3. Commit changes if satisfied\n\nOnly mention this if code was written or modified during the session."
+        }
+      ]
+    }
+  ]
+}
