@@ -15,7 +15,7 @@
         "name": "Ferlo",
         "email": "ferlo@extraweb.it"
       },
-      "source": ".",
+      "source": "./",
       "category": "development",
       "homepage": "https://github.com/ferlo88/ferlo-workflows"
     }
