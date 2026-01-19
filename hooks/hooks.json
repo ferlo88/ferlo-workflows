@@ -5,8 +5,8 @@
       "hooks": [
         {
           "type": "command",
-          "command": "[ -n \"$SLACK_WEBHOOK_URL\" ] && curl -s -X POST -H 'Content-type: application/json' -d '{\"text\":\"Claude Code richiede attenzione - Progetto: '\"$(basename $(pwd))\"'\"}' \"$SLACK_WEBHOOK_URL\" || true",
-          "timeout": 10
+          "command": "bash $CLAUDE_PLUGIN_ROOT/scripts/slack-notify.sh attention 'Richiesta approvazione utente'",
+          "timeout": 15
         }
       ]
     }

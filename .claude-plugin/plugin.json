@@ -1,10 +1,10 @@
 {
   "name": "ferlo-workflows",
-  "version": "2.0.0",
-  "description": "Complete AI-first workflows for EXTRAWEB Laravel projects - code review, testing, debugging, deployment, Filament resources, and roadmap automation",
+  "version": "2.1.0",
+  "description": "Complete AI-first workflows for EXTRAWEB Laravel projects - Git Flow, CI/CD, performance profiling, i18n, database snapshots, Slack notifications, and more",
   "author": {
     "name": "Ferlo",
     "email": "ferlo@extraweb.it"
   },
-  "keywords": ["laravel", "extraweb", "filament", "code-review", "testing", "debugging", "deployment", "api", "roadmap", "refactoring"]
+  "keywords": ["laravel", "extraweb", "filament", "git-flow", "cicd", "performance", "i18n", "changelog", "slack", "testing", "debugging", "deployment"]
 }
