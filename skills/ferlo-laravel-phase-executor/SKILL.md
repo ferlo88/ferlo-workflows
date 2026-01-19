@@ -1,7 +1,7 @@
 ---
 name: ferlo-laravel-phase-executor
 description: Esegue autonomamente fasi di sviluppo Laravel leggendo i file todo_fase_XX.md, completando task con test e commit appropriati, e applicando quality gates
-version: 1.0.0
+version: 2.0.0
 triggers:
   - "esegui la fase"
   - "completa la fase"
