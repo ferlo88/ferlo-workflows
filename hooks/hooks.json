@@ -1,4 +1,16 @@
 {
+  "Notification": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "[ -n \"$SLACK_WEBHOOK_URL\" ] && curl -s -X POST -H 'Content-type: application/json' --data '{\"text\":\"🤖 *Claude Code* richiede la tua attenzione!\\n> Progetto: '\"$(basename $(pwd))\"'\\n> Controlla il terminale per approvare o rispondere.\"}' \"$SLACK_WEBHOOK_URL\" || true",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
   "PreToolUse": [
     {
       "matcher": "Write|Edit",
