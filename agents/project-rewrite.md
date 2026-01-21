@@ -149,13 +149,20 @@ Basandosi su `docs/legacy/11_recommendations.md`:
 Basandomi sull'analisi, ecco le opzioni per il nuovo stack:
 
 ### Opzione 1: Laravel Modern (Consigliata)
+
+**NOTA**: Verifica sempre le ultime versioni prima di procedere:
+- Laravel: https://laravel.com/docs/master/releases
+- Filament: https://filamentphp.com/docs
+- PHP: https://www.php.net/supported-versions.php
+
 | Layer | Tecnologia | Perché |
 |-------|------------|--------|
-| Backend | Laravel 11 | Continuità, curva apprendimento zero |
-| Admin | Filament 3 | Produttività, ecosistema ricco |
+| Backend | Laravel 12.x (o ultima stabile) | Continuità, curva apprendimento zero |
+| Admin | Filament 5.x (o ultima stabile) | Produttività, ecosistema ricco |
 | API | REST + Sanctum | Standard, ben supportato |
-| Database | MySQL 8 | Compatibilità dati esistenti |
-| Frontend | Livewire 3 | Se interattività necessaria |
+| Database | MySQL 8.x / PostgreSQL 16 | Compatibilità dati esistenti |
+| Frontend | Livewire 4.x (o ultima) | Se interattività necessaria |
+| PHP | 8.4+ | Versione minima richiesta da Laravel
 
 **Pro:** Team già familiare, migrazione più semplice
 **Contro:** Stesso ecosistema (se era il problema)
@@ -165,10 +172,11 @@ Basandomi sull'analisi, ecco le opzioni per il nuovo stack:
 ### Opzione 2: Laravel + Vue/React SPA
 | Layer | Tecnologia | Perché |
 |-------|------------|--------|
-| Backend | Laravel 11 | API-first |
-| Frontend | Vue 3 / React | SPA moderna |
-| State | Pinia / Redux | State management |
+| Backend | Laravel (ultima stabile) | API-first |
+| Frontend | Vue 3 / React 19+ | SPA moderna |
+| State | Pinia / Zustand | State management |
 | API | REST o GraphQL | Flessibilità |
+| Build | Vite | Build tool moderno |
 
 **Pro:** Separazione concerns, UX moderna
 **Contro:** Complessità maggiore, due codebase
@@ -743,9 +751,10 @@ Riscrivi il progetto in /var/www/legacy-app
 
 ### Con obiettivi specifici
 ```
-Modernizza /var/www/old-crm, voglio passare a Laravel 11 + Filament
+Modernizza /var/www/old-crm, voglio passare a Laravel + Filament
 e aggiungere multi-tenancy
 ```
+*L'agent userà automaticamente le ultime versioni stabili disponibili.*
 
 ### Solo analisi prima
 ```

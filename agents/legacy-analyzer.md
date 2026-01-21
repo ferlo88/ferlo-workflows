@@ -911,14 +911,20 @@ Genera `docs/legacy/11_recommendations.md`:
 
 ## Stack Suggerito per Riscrittura
 
+**NOTA**: Verifica sempre le ultime versioni stabili prima di raccomandare:
+- Laravel: https://laravel.com/docs/master/releases
+- Filament: https://filamentphp.com/docs
+- PHP: https://www.php.net/supported-versions.php
+
 ### Opzione 1: Laravel Modern (Consigliata)
 | Layer | Tecnologia | Motivo |
 |-------|------------|--------|
-| Backend | Laravel 11 | Continuità, team familiare |
-| Frontend | Filament 3 | Admin rapido, produttivo |
-| Database | MySQL 8 / PostgreSQL 16 | [motivo] |
-| Cache | Redis | Performance |
-| Queue | Redis | Affidabilità |
+| Backend | Laravel (ultima stabile) | Continuità, team familiare |
+| Frontend | Filament (ultima stabile) | Admin rapido, produttivo |
+| Database | MySQL 8.x / PostgreSQL 16+ | [motivo] |
+| Cache | Redis 7.x | Performance |
+| Queue | Redis / Horizon | Affidabilità |
+| PHP | 8.4+ (o come richiesto da Laravel) | Performance e features |
 
 ### Opzione 2: [Alternativa]
 | Layer | Tecnologia | Motivo |

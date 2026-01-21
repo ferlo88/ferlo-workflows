@@ -1,21 +1,25 @@
 ---
 name: ferlo-laravel-upgrade
-description: Guida all'upgrade di versioni Laravel. Usa quando l'utente chiede "upgrade Laravel", "aggiornare Laravel", "migrare a Laravel 11", "breaking changes", o "upgrade guide".
-version: 1.0.0
+description: Guida all'upgrade di versioni Laravel. Usa quando l'utente chiede "upgrade Laravel", "aggiornare Laravel", "migrare a Laravel 12", "breaking changes", o "upgrade guide".
+version: 2.0.0
 ---
 
 # Laravel Upgrade Assistant
 
 Guida passo-passo per l'upgrade di versioni Laravel con checklist e fix automatici.
 
+**NOTA**: Prima di procedere con qualsiasi upgrade, verifica sempre la documentazione ufficiale:
+- https://laravel.com/docs/master/upgrade
+
 ## Versioni Supportate
 
-| Da | A | Complessità |
-|----|---|-------------|
-| 10.x | 11.x | Media |
-| 9.x | 10.x | Bassa |
-| 8.x | 9.x | Media |
-| 8.x | 11.x | Alta (multi-step) |
+| Da | A | Complessità | Tempo Stimato |
+|----|---|-------------|---------------|
+| 11.x | 12.x | Bassa | ~5 minuti |
+| 10.x | 11.x | Media | ~30 minuti |
+| 9.x | 10.x | Bassa | ~15 minuti |
+| 8.x | 9.x | Media | ~30 minuti |
+| 8.x | 12.x | Alta (multi-step) | ~2 ore |
 
 ## Pre-Upgrade Checklist
 
@@ -36,6 +40,190 @@ git add -A && git commit -m "chore: pre-upgrade snapshot"
 # 5. Crea branch upgrade
 git checkout -b upgrade/laravel-11
 ```
+
+## Laravel 11.x → 12.x
+
+### Requisiti
+
+- PHP 8.2+ (rimane invariato)
+- Composer 2.2+
+- Carbon 3.x (obbligatorio, Carbon 2 non più supportato)
+
+### Step 1: Aggiorna composer.json
+
+```json
+{
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.10"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.24",
+        "laravel/pint": "^1.18",
+        "laravel/sail": "^1.34",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.5",
+        "phpunit/phpunit": "^11.0",
+        "pestphp/pest": "^3.0"
+    }
+}
+```
+
+### Step 2: Aggiorna dipendenze
+
+```bash
+composer update
+```
+
+### Step 3: Breaking Changes
+
+#### Carbon 3 (IMPORTANTE)
+
+Laravel 12 richiede Carbon 3. Se usi Carbon direttamente:
+
+```php
+// Verifica la guida migration Carbon 2 → 3
+// https://carbon.nesbot.com/guide/getting-started/migration.html
+
+// Principali cambiamenti:
+// - Alcune costanti rinominate
+// - Alcuni metodi deprecati rimossi
+```
+
+#### UUIDv7 per HasUuids
+
+Il trait `HasUuids` ora genera UUIDv7 (ordinati) invece di v4:
+
+```php
+// Per continuare a usare UUIDv4:
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
+
+class MyModel extends Model
+{
+    use HasUuids;
+}
+```
+
+#### Validazione Immagini (SVG esclusi)
+
+SVG non più accettati di default dalla regola `image`:
+
+```php
+// PRIMA (Laravel 11)
+'photo' => 'required|image'  // SVG accettato
+
+// DOPO (Laravel 12)
+'photo' => 'required|image'  // SVG rifiutato
+
+// Per permettere SVG:
+'photo' => 'required|image:allow_svg'
+
+// Oppure con File rule:
+use Illuminate\Validation\Rules\File;
+'photo' => ['required', File::image(allowSvg: true)]
+```
+
+#### Filesystem Local Disk Path
+
+Il disco `local` ora usa `storage/app/private` invece di `storage/app`:
+
+```php
+// Per mantenere il comportamento precedente,
+// definisci esplicitamente in config/filesystems.php:
+'local' => [
+    'driver' => 'local',
+    'root' => storage_path('app'),
+    // ...
+],
+```
+
+#### Container: Default Property Values
+
+Il container ora rispetta i valori default delle proprietà:
+
+```php
+class Example {
+    public function __construct(public ?Carbon $date = null) {}
+}
+
+$example = resolve(Example::class);
+
+// Laravel 11: $example->date instanceof Carbon (auto-resolved)
+// Laravel 12: $example->date === null (rispetta default)
+```
+
+#### Database Grammar Constructor
+
+Le classi Grammar ora richiedono Connection nel costruttore:
+
+```php
+// PRIMA (Laravel 11)
+$grammar = new MySqlGrammar;
+$grammar->setConnection($connection);
+
+// DOPO (Laravel 12)
+$grammar = new MySqlGrammar($connection);
+```
+
+Metodi deprecati/rimossi:
+- `Blueprint::getPrefix()`
+- `Connection::withTablePrefix()`
+- `Grammar::getTablePrefix()`, `setTablePrefix()`, `setConnection()`
+
+#### Multi-Schema Database Inspecting
+
+Schema methods ora includono tutti gli schemi:
+
+```php
+// Tutte le tabelle di tutti gli schemi
+$tables = Schema::getTables();
+
+// Solo uno schema specifico
+$tables = Schema::getTables(schema: 'main');
+
+// Nomi qualificati con schema (nuovo default)
+$tables = Schema::getTableListing();
+// ['main.migrations', 'main.users']
+
+// Nomi non qualificati
+$tables = Schema::getTableListing(schema: 'main', schemaQualified: false);
+```
+
+#### Concurrency Results con Chiavi
+
+Array associativi ora mantengono le chiavi:
+
+```php
+$result = Concurrency::run([
+    'task-1' => fn () => 1 + 1,
+    'task-2' => fn () => 2 + 2,
+]);
+
+// Ritorna: ['task-1' => 2, 'task-2' => 4]
+```
+
+### Step 4: Test
+
+```bash
+# Clear cache
+php artisan optimize:clear
+
+# Run tests
+php artisan test
+
+# Verifica manuale
+php artisan serve
+```
+
+### Step 5: Aggiorna Laravel Installer
+
+```bash
+composer global update laravel/installer
+```
+
+---
 
 ## Laravel 10.x → 11.x
 
@@ -353,6 +541,9 @@ composer require package/name:^X.Y
 
 ## Risorse Ufficiali
 
+- Laravel 12 Upgrade Guide: https://laravel.com/docs/12.x/upgrade
 - Laravel 11 Upgrade Guide: https://laravel.com/docs/11.x/upgrade
 - Laravel 10 Upgrade Guide: https://laravel.com/docs/10.x/upgrade
+- Carbon 3 Migration: https://carbon.nesbot.com/guide/getting-started/migration.html
 - Laravel Shift (automazione): https://laravelshift.com
+- GitHub Comparison: https://github.com/laravel/laravel/compare/11.x...12.x

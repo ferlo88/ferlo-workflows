@@ -31,7 +31,7 @@ Dalla documentazione al codice:
 ## Setup Progetto Laravel
 
 ```bash
-# Crea progetto
+# Crea progetto (usa sempre ultima versione stabile)
 composer create-project laravel/laravel project-name
 
 # Setup base
@@ -39,15 +39,19 @@ cd project-name
 cp .env.example .env
 php artisan key:generate
 
-# Dipendenze EXTRAWEB standard
-composer require laravel/sanctum
-composer require spatie/laravel-permission
-composer require spatie/laravel-query-builder
+# Dipendenze EXTRAWEB standard (verifica compatibilità prima)
+composer require laravel/sanctum           # Auth API/SPA
+composer require spatie/laravel-permission # Ruoli e permessi
+composer require spatie/laravel-query-builder # Filtri API
+composer require spatie/laravel-data       # DTO e validazione
 
 # Dev dependencies
-composer require --dev pestphp/pest
-composer require --dev larastan/larastan
-composer require --dev laravel/pint
+composer require --dev pestphp/pest pestphp/pest-plugin-laravel
+composer require --dev larastan/larastan   # Static analysis
+composer require --dev laravel/pint        # Code style
+
+# Se admin panel
+composer require filament/filament:"^5.0"
 ```
 
 ## Struttura Directory
@@ -73,6 +77,19 @@ project-name/
 └── CLAUDE.md              # Istruzioni per Claude Code
 ```
 
+## Verifica Versioni Prima di Iniziare
+
+**IMPORTANTE**: Prima di creare un nuovo progetto, verifica le ultime versioni disponibili:
+
+```bash
+# Verifica ultima versione Laravel
+composer show laravel/laravel --available | head -5
+
+# Oppure visita: https://laravel.com/docs/master/releases
+# Per PHP: https://www.php.net/supported-versions.php
+# Per Filament: https://filamentphp.com/docs
+```
+
 ## CLAUDE.md Template
 
 ```markdown
@@ -82,10 +99,11 @@ project-name/
 [Descrizione breve del progetto]
 
 ## Stack
-- Laravel 11.x
-- PHP 8.3
-- MySQL 8.0
-- Redis
+- Laravel 12.x
+- PHP 8.4
+- MySQL 8.0 / PostgreSQL 16
+- Redis 7.x
+- Filament 5.x (se admin panel)
 
 ## Convenzioni
 - UUID come primary key

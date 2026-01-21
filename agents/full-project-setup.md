@@ -140,10 +140,12 @@ Se l'input è ambiguo, chiedi UNA VOLTA all'inizio:
 Ho bisogno di alcuni chiarimenti per generare documentazione accurata:
 
 1. **Stack tecnologico preferito?**
-   - Laravel + Filament (admin)
-   - Laravel + Vue/React (SPA)
-   - Laravel + Livewire
+   - Laravel + Filament (admin) - *consigliato per backoffice*
+   - Laravel + Vue/React/Inertia (SPA)
+   - Laravel + Livewire (interattività server-side)
    - Altro: ___
+
+   *Nota: userò le ultime versioni stabili disponibili*
 
 2. **Tipo di progetto?**
    - Applicazione web multi-tenant
@@ -284,12 +286,18 @@ Se l'utente specifica "senza fare domande" o simile:
 - **NON chiedere MAI** nulla durante tutto il processo
 - Propaga la modalità a tutti i sub-agent (discovery, design, roadmap)
 - Usa default sensati per ogni decisione:
-  - Stack: Laravel 11 + Filament 3
-  - Database: MySQL
-  - API: REST standard
+  - Stack: Laravel (ultima versione stabile) + Filament (ultima versione stabile)
+  - Database: MySQL 8.0 / PostgreSQL 16
+  - API: REST standard con versioning
   - Auth: Sanctum
+  - PHP: versione più recente supportata da Laravel
 - Documenta TUTTE le assunzioni nell'output finale
 - Se manca input, genera template base da completare
+
+**NOTA**: Prima di definire lo stack, verifica le versioni attuali:
+- Laravel: https://laravel.com/docs/master/releases
+- Filament: https://filamentphp.com/docs
+- PHP: https://www.php.net/supported-versions.php
 
 ### Interattiva
 Se l'utente specifica "passo passo" o "con conferme":

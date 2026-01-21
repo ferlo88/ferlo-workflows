@@ -216,7 +216,7 @@ php artisan backup:monitor
 ### Schedule
 
 ```php
-// routes/console.php (Laravel 11)
+// routes/console.php (Laravel 11+)
 use Illuminate\Support\Facades\Schedule;
 
 // Backup giornaliero alle 2:00
